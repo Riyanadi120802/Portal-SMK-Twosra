@@ -1,24 +1,41 @@
 import os
 import time
+from konektor import db
+import getpass
+import mysql.connector
 
-def login(nama, password):
-    cek = False
-    file = open("database.txt", "r")
-    for i in file:
-        username,psd,roles = i.split(",")
-        psd = psd.strip()
-        if(username == nama and psd==password):
-            cek = True
-            break
-    file.close()
-    if(cek==True):
-        print("Login berhasil, silahkan masuk!")
+cursor = db.cursor()
+
+def login(nama, psd):
+    # cek = False
+    # file = open("database.txt", "r")
+    # for i in file:
+    #     username,psd,roles = i.split(",")
+    #     psd = psd.strip()
+    #     if(username == nama and psd==password):
+    #         cek = True
+    #         break
+    # file.close()
+    # if(cek==True):
+    #     print("Login berhasil, silahkan masuk!")
+    # else:
+    #     print("nama atau password anda salah ! atau")
+    #     print("anda belum terdaftar, silahkan daftar !")
+    #     time.sleep(2)
+    #     os.system('cls' if os.name == 'nt' else 'clear')
+    #     awal()
+    username = nama
+    password = psd
+
+    query = "SELECT * FROM user WHERE username=%s AND password=%s"
+    cursor.execute(query, (username, password))
+
+    # Jika ada data yang cocok, login berhasil
+    if cursor.fetchone():
+        print("Login berhasil!")
     else:
-        print("nama atau password anda salah ! atau")
-        print("anda belum terdaftar, silahkan daftar !")
-        time.sleep(2)
-        os.system('cls' if os.name == 'nt' else 'clear')
-        awal()
+        print("Username atau password salah!")
+
 
 def register(nama, password, role):
     file = open("database.txt", "a")
@@ -28,7 +45,7 @@ def masuk(option):
     global nama
     if(option==1):
         nama = input("Masukkan nama anda : ")
-        password = input("Masukkan password : ")
+        password = getpass.getpass()
         login(nama, password)
     else:
         # print("Masukkan ID dan password anda yang baru !")
