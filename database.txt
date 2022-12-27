@@ -1,4 +1,0 @@
-admin,admin,admin
-riyan,123,user
-hendra, 123,user
-aldi, 123,user

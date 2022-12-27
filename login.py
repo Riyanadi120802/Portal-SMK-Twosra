@@ -1,29 +1,11 @@
 import os
 import time
 from konektor import db
-import getpass
-import mysql.connector
+from pwinput import pwinput
 
 cursor = db.cursor()
 
 def login(nama, psd):
-    # cek = False
-    # file = open("database.txt", "r")
-    # for i in file:
-    #     username,psd,roles = i.split(",")
-    #     psd = psd.strip()
-    #     if(username == nama and psd==password):
-    #         cek = True
-    #         break
-    # file.close()
-    # if(cek==True):
-    #     print("Login berhasil, silahkan masuk!")
-    # else:
-    #     print("nama atau password anda salah ! atau")
-    #     print("anda belum terdaftar, silahkan daftar !")
-    #     time.sleep(2)
-    #     os.system('cls' if os.name == 'nt' else 'clear')
-    #     awal()
     username = nama
     password = psd
 
@@ -35,24 +17,52 @@ def login(nama, psd):
         print("Login berhasil!")
     else:
         print("Username atau password salah!")
+        print("anda belum terdaftar, silahkan daftar !")
+        time.sleep(2)
+        os.system('cls' if os.name == 'nt' else 'clear')
+        awal()
 
 
-def register(nama, password, role):
-    file = open("database.txt", "a")
-    file.write(nama + ", " + password + "," + role + "\n")
+def register(name, password, nama, alamat, ttl, id):
+
+    idUser = id
+    username = name
+    psd = password
+    namaLengkap = nama
+    date = ttl
+    addres = alamat
+
+    # Definisikan parameter
+    values = (idUser, username, psd, namaLengkap, date, addres)
+
+    # Masukkan parameter ke dalam statement SQL menggunakan persentase sebagai placeholder
+    query = "INSERT INTO `user` (`id`, `username`, `password`, `nama`, `ttl`, `alamat`) VALUES (%s, %s, %s, %s, %s, %s)"
+
+    # Jalankan statement SQL
+    cursor.execute(query, values)
+
+    # Commit perubahan ke database
+    db.commit()
+
+    # Menutup kursor dan koneksi
+    cursor.close()
+    db.close()
+
 
 def masuk(option):
-    global nama
     if(option==1):
         nama = input("Masukkan nama anda : ")
-        password = getpass.getpass()
+        password = pwinput("Masukkan password anda : ", "*")
         login(nama, password)
     else:
         # print("Masukkan ID dan password anda yang baru !")
+        id = input("Masukkan id anda : ")
+        name = input("Masukkan username anda : ")
+        password = pwinput("Masukkan password anda : ", "*")
         nama = input("Masukkan nama anda : ")
-        password = input("Masukkan password anda : ")
-        role = input("Masukkan role anda : ")
-        register(nama, password, role)
+        ttl = input("Masukkan tanggal lahir : ")
+        alamat = input("Masukkan alamat anda : ")
+        register(name, password, nama, alamat,ttl, id)
         print("Anda berhasil terdaftar")
 def awal():
     global option
